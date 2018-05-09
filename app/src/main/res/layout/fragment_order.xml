@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <Button
+        android:id="@+id/order_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:text="@string/start"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="bold">
+
+    </Button>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/order_button">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/date_time_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:text="26.02.2018 18:00"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_size_large" />
+
+            <RelativeLayout
+                android:id="@+id/id_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/date_time_value"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_normal">
+
+                <TextView
+                    android:id="@+id/id_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="№000001"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/text_size_normal" />
+
+                <TextView
+                    android:id="@+id/status_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_toEndOf="@+id/id_value"
+                    android:background="@drawable/view_rectangle_primary_light"
+                    android:paddingBottom="@dimen/margin_xsmall"
+                    android:paddingEnd="@dimen/margin_small"
+                    android:paddingStart="@dimen/margin_small"
+                    android:paddingTop="@dimen/margin_xsmall"
+                    android:text="Оплачен"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/name_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/id_layout"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="@dimen/margin_normal"
+                android:text="Юлия Мирзабаева"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_size_large" />
+
+            <TextView
+                android:id="@+id/phone_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/name_value"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="@dimen/margin_normal"
+                android:text="+7 953 171 45 00"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_size_large" />
+
+            <TextView
+                android:id="@+id/address_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/phone_value"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="@dimen/margin_normal"
+                android:text="Богатырский проспект, дом 2"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_size_huge" />
+
+            <ImageView
+                android:id="@+id/change_order_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/address_value"
+                android:paddingEnd="@dimen/margin_normal"
+                android:paddingStart="@dimen/margin_normal"
+                android:paddingTop="@dimen/margin_large"
+                android:src="@drawable/ic_delete_sweep" />
+
+            <TextView
+                android:id="@+id/order_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/address_value"
+                android:layout_toEndOf="@+id/change_order_image"
+                android:paddingTop="@dimen/margin_very_large"
+                android:text="@string/order"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_size_large" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/order_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/change_order_image" />
+
+            <TextView
+                android:id="@+id/price_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/order_recycler_view"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:paddingTop="@dimen/margin_large"
+                android:text="1000"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_size_large" />
+
+            <TextView
+                android:id="@+id/price_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/order_recycler_view"
+                android:layout_marginBottom="@dimen/margin_large"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:layout_toStartOf="@id/price_value"
+                android:paddingTop="@dimen/margin_large"
+                android:text="@string/total"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_size_large" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
