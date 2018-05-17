@@ -33,7 +33,7 @@ class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.Order
     @Override
     public void onBindViewHolder(OrderViewHolder holder, int position) {
         holder.name.setText(products.get(position).getName());
-        int amount = products.get(position).getAmount();
+        int amount = products.get(position).getQuantity();
         holder.amount.setText(String.valueOf(amount));
         holder.price.setText(String.valueOf(products.get(position).getPrice() * amount));
         holder.plus.setVisibility(isNeedToChange ? View.VISIBLE : View.GONE);
@@ -76,7 +76,7 @@ class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.Order
             });
             minus.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    if(products.get(position).getAmount() != 0) {
+                    if(products.get(position).getQuantity() != 0) {
                         listener.onClick(position, false);
                     }
                 }

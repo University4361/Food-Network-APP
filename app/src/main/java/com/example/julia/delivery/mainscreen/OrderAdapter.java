@@ -10,15 +10,16 @@ import android.widget.TextView;
 
 import com.example.julia.delivery.R;
 import com.example.julia.delivery.objects.Order;
+import com.example.julia.delivery.objects.OrderPreview;
 
 import java.util.List;
 
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
-    private List<Order> orders;
+    private List<OrderPreview> orders;
     private OnCustomClickListener listener;
-    OrderAdapter(@NonNull List<Order> orders, @NonNull OnCustomClickListener listener){
+    OrderAdapter(@NonNull List<OrderPreview> orders, @NonNull OnCustomClickListener listener){
         this.orders = orders;
         this.listener = listener;
     }
@@ -31,8 +32,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     @Override
     public void onBindViewHolder(OrderViewHolder holder, int position) {
-        holder.dateTime.setText(orders.get(position).getDate());
-        holder.address.setText(orders.get(position).getAddress());
+        holder.dateTime.setText(orders.get(position).getDeliveryTime().toString());
+        holder.address.setText(orders.get(position).getAddress().getStreet());
         holder.bind(position, listener);
     }
 

@@ -2,6 +2,8 @@ package com.example.julia.delivery;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +16,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.julia.delivery.api.models.GetOrderRequest;
+import com.example.julia.delivery.mainscreen.OrderAdapter;
 import com.example.julia.delivery.objects.Order;
+import com.example.julia.delivery.objects.OrderDetails;
+import com.example.julia.delivery.objects.OrderPreview;
 import com.example.julia.delivery.objects.Product;
 
 import java.util.ArrayList;
@@ -23,6 +29,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OrderFragment extends Fragment {
 
@@ -37,7 +46,8 @@ public class OrderFragment extends Fragment {
     private OrderDetailsAdapter adapter;
     private boolean isNeedToChange;
     private List<Product> products;
-    Order order;
+    OrderDetails order;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,28 +56,53 @@ public class OrderFragment extends Fragment {
         ButterKnife.bind(this, view);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(llm);
-        order = new Order();
-        products = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            Product product = new Product();
-            product.setName("Пицца Цезарь");
-            product.setAmount(1);
-            product.setPrice(100);
-            products.add(product);
-        }
-        order.setProducts(products);
-        order.setPrice(1000.0);
-        adapter = new OrderDetailsAdapter(products, new OnChangeProductsListener() {
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String defaultValue = null;
+        String token = sharedPref.getString(getString(R.string.token), defaultValue);
+
+        GetOrderRequest getOrderRequest = new GetOrderRequest();
+
+        getOrderRequest.setOrderID(1);
+        getOrderRequest.setToken(token);
+
+        App.getApi().getOrder(getOrderRequest).enqueue(new Callback<OrderDetails>() {
             @Override
-            public void onClick(int position, boolean isAdd) {
-                products.get(position).setAmount(isAdd ? products.get(position).getAmount() + 1 : products.get(position).getAmount() - 1);
-                Double newPrice = isAdd ? order.getPrice() + products.get(position).getPrice() : order.getPrice() - products.get(position).getPrice();
-                mTotalPrice.setText(String.valueOf(newPrice));
-                order.setPrice(newPrice);
-                adapter.notifyDataSetChanged();
+            public void onResponse(Call<OrderDetails> call, final Response<OrderDetails> response) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response.isSuccessful()) {
+
+                            order = response.body();
+
+                            products = order.getOrderProducts();
+
+                            mTotalPrice.setText(String.valueOf(order.getPrice()));
+
+                            adapter = new OrderDetailsAdapter(products, new OnChangeProductsListener() {
+                                @Override
+                                public void onClick(int position, boolean isAdd) {
+                                    products.get(position).setQuantity(isAdd ? products.get(position).getQuantity() + 1 : products.get(position).getQuantity() - 1);
+                                    float newPrice = isAdd ? order.getPrice() + products.get(position).getPrice() : order.getPrice()  - products.get(position).getPrice();
+                                    mTotalPrice.setText(String.valueOf(newPrice));
+                                    order.setPrice(newPrice);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                            mRecyclerView.setAdapter(adapter);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<OrderDetails> call, Throwable t) {
+
             }
         });
-        mRecyclerView.setAdapter(adapter);
+
+
         return view;
     }
 

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.support.v4.app.Fragment;
 
 import com.example.julia.delivery.mainscreen.MainFragment;
+import com.example.julia.delivery.objects.OrderPreview;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void switchToOrderFragment() {
+    public void switchToOrderFragment(OrderPreview preview) {
         fragment = new OrderFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.container, fragment).addToBackStack(null).commit();

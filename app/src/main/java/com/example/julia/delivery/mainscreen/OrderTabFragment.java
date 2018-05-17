@@ -1,7 +1,10 @@
 package com.example.julia.delivery.mainscreen;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,16 +13,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.julia.delivery.App;
 import com.example.julia.delivery.MainActivity;
 import com.example.julia.delivery.OrderFragment;
 import com.example.julia.delivery.R;
+import com.example.julia.delivery.api.models.AuthResponse;
+import com.example.julia.delivery.api.models.GetOrdersRequest;
 import com.example.julia.delivery.objects.Order;
+import com.example.julia.delivery.objects.OrderPreview;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OrderTabFragment extends Fragment {
     @BindView(R.id.orders_recycler_view)RecyclerView mRecyclerView;
@@ -32,20 +42,42 @@ public class OrderTabFragment extends Fragment {
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(llm);
-        List<Order> orders = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            Order order = new Order();
-            order.setDate("28.02.2018");
-            order.setAddress("Богатырский проспект, дом 2");
-            orders.add(order);
-        }
-        OrderAdapter adapter = new OrderAdapter(orders, new OnCustomClickListener() {
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        String defaultValue = null;
+        String token = sharedPref.getString(getString(R.string.token), defaultValue);
+
+        GetOrdersRequest getOrdersRequest = new GetOrdersRequest();
+
+        getOrdersRequest.setToken(token);
+
+        App.getApi().getOrders(getOrdersRequest).enqueue(new Callback<List<OrderPreview>>() {
             @Override
-            public void onClick(int position) {
-                mainActivity.switchToOrderFragment();
+            public void onResponse(Call<List<OrderPreview>> call, final Response<List<OrderPreview>> response) {
+                mainActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response.isSuccessful()) {
+                            final List<OrderPreview> orders = response.body();
+
+                            final OrderAdapter adapter = new OrderAdapter(orders, new OnCustomClickListener() {
+                                @Override
+                                public void onClick(int position) {
+                                    mainActivity.switchToOrderFragment(orders.get(position));
+                                }
+                            });
+                            mRecyclerView.setAdapter(adapter);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<List<OrderPreview>> call, Throwable t) {
+
             }
         });
-        mRecyclerView.setAdapter(adapter);
+
         return view;
     }
 
