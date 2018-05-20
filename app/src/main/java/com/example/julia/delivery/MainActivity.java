@@ -20,6 +20,7 @@ import com.example.julia.delivery.objects.OrderPreview;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     Fragment fragment;
+    public MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +86,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_orders) {
-            fragment = MainFragment.createNewInstance(this);
+            mainFragment = MainFragment.createNewInstance(this);
         }
 
-        if (fragment != null) {
+        if (mainFragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.container, mainFragment).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -99,8 +100,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void switchToOrderFragment(OrderPreview preview) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("prewId", preview.getId());
+
         fragment = new OrderFragment();
+        fragment.setArguments(bundle);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.container, fragment).addToBackStack(null).commit();
+    }
+
+    public void  updateStatusPreview(OrderPreview preview)
+    {
+        mainFragment.UpdatePreview(preview);
     }
 }

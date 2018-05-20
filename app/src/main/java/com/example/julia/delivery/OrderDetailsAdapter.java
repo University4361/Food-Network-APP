@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.example.julia.delivery.objects.Product;
@@ -43,6 +44,12 @@ class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.Order
 
     void setNeedToChange(boolean isNeedToChange) {
         this.isNeedToChange = isNeedToChange;
+    }
+
+    public void UpdateItems(List<Product> prods)
+    {
+        products = prods;
+        notifyDataSetChanged();
     }
 
     @Override

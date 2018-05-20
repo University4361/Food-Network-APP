@@ -14,6 +14,8 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -46,12 +48,17 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://newfnapi.azurewebsites.net") //Базовая часть адреса
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson)) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
         foodNetworkAPI = retrofit.create(FoodNetworkAPI.class); //Создаем объект, при помощи которого будем выполнять запросы

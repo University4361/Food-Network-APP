@@ -34,6 +34,7 @@ import retrofit2.Response;
 public class OrderTabFragment extends Fragment {
     @BindView(R.id.orders_recycler_view)RecyclerView mRecyclerView;
     private MainActivity mainActivity;
+    private OrderAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,12 +61,12 @@ public class OrderTabFragment extends Fragment {
                         if (response.isSuccessful()) {
                             final List<OrderPreview> orders = response.body();
 
-                            final OrderAdapter adapter = new OrderAdapter(orders, new OnCustomClickListener() {
+                            adapter = new OrderAdapter(orders, new OnCustomClickListener() {
                                 @Override
                                 public void onClick(int position) {
-                                    mainActivity.switchToOrderFragment(orders.get(position));
+                                    mainActivity.switchToOrderFragment(adapter.getItem(position));
                                 }
-                            });
+                            }, mainActivity);
                             mRecyclerView.setAdapter(adapter);
                         }
                     }
@@ -85,5 +86,11 @@ public class OrderTabFragment extends Fragment {
         OrderTabFragment orderTabFragment = new OrderTabFragment();
         orderTabFragment.mainActivity = activity;
         return orderTabFragment;
+    }
+
+    public void UpdatePreview(OrderPreview preview)
+    {
+        adapter.UpdateAndSetupItems(preview);
+        adapter.notifyDataSetChanged();
     }
 }

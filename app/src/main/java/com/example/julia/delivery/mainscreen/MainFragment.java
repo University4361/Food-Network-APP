@@ -11,10 +11,16 @@ import android.view.ViewGroup;
 
 import com.example.julia.delivery.MainActivity;
 import com.example.julia.delivery.R;
+import com.example.julia.delivery.objects.OrderPreview;
+
+import java.util.List;
 
 public class MainFragment extends Fragment {
 
     private MainActivity mainActivity;
+    private PagerAdapter adapter;
+    ViewPager viewPager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -25,8 +31,8 @@ public class MainFragment extends Fragment {
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.map)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = view.findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter
+        viewPager = view.findViewById(R.id.pager);
+        adapter = new PagerAdapter
                 (getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), mainActivity);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -54,5 +60,10 @@ public class MainFragment extends Fragment {
         MainFragment mainFragment = new MainFragment();
         mainFragment.mainActivity = activity;
         return mainFragment;
+    }
+
+    public void UpdatePreview(OrderPreview preview)
+    {
+        ((OrderTabFragment)adapter.instantiateItem(viewPager, 0)).UpdatePreview(preview);
     }
 }
