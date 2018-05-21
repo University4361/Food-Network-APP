@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import com.example.julia.delivery.MainActivity;
 import com.example.julia.delivery.R;
 import com.example.julia.delivery.objects.OrderPreview;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.orders)));
@@ -56,14 +58,17 @@ public class MainFragment extends Fragment {
         return view;
     }
 
-    public static MainFragment createNewInstance(@NonNull MainActivity activity){
+    public static MainFragment createNewInstance(@NonNull MainActivity activity) {
         MainFragment mainFragment = new MainFragment();
         mainFragment.mainActivity = activity;
         return mainFragment;
     }
 
-    public void UpdatePreview(OrderPreview preview)
-    {
-        ((OrderTabFragment)adapter.instantiateItem(viewPager, 0)).UpdatePreview(preview);
+    public void UpdatePreview(OrderPreview preview) {
+        ((OrderTabFragment) adapter.instantiateItem(viewPager, 0)).UpdatePreview(preview);
+    }
+
+    public void SetupAddresses(List<OrderPreview> previews) {
+        ((MapTabFragment) adapter.instantiateItem(viewPager, 1)).SetupAddresses(previews);
     }
 }

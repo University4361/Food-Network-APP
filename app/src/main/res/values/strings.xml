@@ -21,6 +21,7 @@
     <string name="finish">Завершить</string>
     <string name="done">Выполнен</string>
     <string name="token">TOKEN</string>
+    <string name="user">USER</string>
     <string name="finish_message">Заказ доставлен и оплачен?</string>
     <string name="start_message">Вы готовы приступить к выполнению заказа?</string>
 

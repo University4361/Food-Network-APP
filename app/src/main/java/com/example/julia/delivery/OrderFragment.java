@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +62,8 @@ public class OrderFragment extends Fragment {
     TextView mAddressValue;
     @BindView(R.id.order_button)
     Button mOrderButton;
+    @BindView(R.id.progressBarLayout)
+    FrameLayout mLoading;
     private OrderDetailsAdapter adapter;
     private boolean isNeedToChange;
     private List<Product> products;
@@ -129,6 +132,9 @@ public class OrderFragment extends Fragment {
                                 }
                             });
                             mRecyclerView.setAdapter(adapter);
+
+                            mLoading.setVisibility(View.GONE);
+                            mOrderButton.setVisibility(View.VISIBLE);
                         }
                     }
                 });

@@ -16,9 +16,11 @@
         android:id="@+id/imageView"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:background="@drawable/ic_account_circle" />
+        android:scaleType="fitXY"
+        android:background="@drawable/bg_courier_photo" />
 
     <TextView
+        android:id="@+id/courierName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Иван Иванов"
@@ -37,7 +39,7 @@
             android:layout_marginTop="1dp"/>
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/ratingTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_xsmall"

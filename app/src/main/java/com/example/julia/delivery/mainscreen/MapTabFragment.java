@@ -11,15 +11,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.julia.delivery.MainActivity;
+import com.example.julia.delivery.objects.OrderPreview;
 import com.google.android.gms.maps.*;
 
 import com.example.julia.delivery.R;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
 
-public class MapTabFragment extends Fragment implements OnMapReadyCallback{
+
+public class MapTabFragment extends Fragment implements OnMapReadyCallback {
+
+    GoogleMap mMap;
+    List<OrderPreview> previewList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,6 +41,31 @@ public class MapTabFragment extends Fragment implements OnMapReadyCallback{
 
     @Override
     public void onMapReady(GoogleMap map) {
+        mMap = map;
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                OrderPreview orderPreview = new OrderPreview();
+
+                orderPreview.setId((int)marker.getTag());
+
+                ((MainActivity)getActivity()).switchToOrderFragment(orderPreview);
+                return false;
+            }
+        });
+
+        if (previewList == null) {
+            return;
+        }
+
+        for (OrderPreview preview :
+                previewList) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(preview.getAddress().getLatitude(), preview.getAddress().getLongitude()))
+                    .title(preview.getAddress().getStreet())).setTag(preview.getId());
+
+        }
         /*map.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Marker"));*/
@@ -59,7 +92,7 @@ public class MapTabFragment extends Fragment implements OnMapReadyCallback{
 
     private Location getMyLocation() {
         // Get location from GPS if it's available
-        LocationManager lm = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Location myLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         // Location wasn't found, check the next most accurate place for the current location
@@ -73,5 +106,19 @@ public class MapTabFragment extends Fragment implements OnMapReadyCallback{
         }
 
         return myLocation;
+    }
+
+    public void SetupAddresses(List<OrderPreview> previews) {
+        if (mMap == null) {
+            previewList = previews;
+            return;
+        }
+
+        for (OrderPreview preview :
+                previews) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(preview.getAddress().getLatitude(), preview.getAddress().getLongitude()))
+                    .title(preview.getCustomer().getName() + "/n" + preview.getCustomer().getPhoneNumber()));
+        }
     }
 }

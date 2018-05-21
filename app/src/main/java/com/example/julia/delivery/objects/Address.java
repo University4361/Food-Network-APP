@@ -28,6 +28,15 @@ public class Address {
     @Expose
     private int homeNumber ;
 
+    @SerializedName("latitude")
+    @Expose
+    private float latitude;
+
+    @SerializedName("longitude")
+    @Expose
+    private float longitude;
+
+
     public int getId() {
         return id;
     }
@@ -66,5 +75,21 @@ public class Address {
 
     public void setHomeNumber(int homeNumber) {
         this.homeNumber = homeNumber;
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
     }
 }

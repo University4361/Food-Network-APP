@@ -12,6 +12,8 @@ import android.widget.EditText;
 
 import com.example.julia.delivery.api.models.AuthRequest;
 import com.example.julia.delivery.api.models.AuthResponse;
+import com.example.julia.delivery.objects.Courier;
+import com.google.gson.Gson;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -52,12 +54,16 @@ public class RegistrationActivity  extends Activity{
                     @Override
                     public void run() {
                         if (response.isSuccessful()) {
+                            String courier = new Gson().toJson(response.body().getCourier());
+
                             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getCurrentContext());
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString(getString(R.string.token), response.body().getToken());
+                            editor.putString(getString(R.string.user), courier);
                             editor.apply();
 
                             Intent intent = new Intent(getCurrentContext(), MainActivity.class);
+
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }

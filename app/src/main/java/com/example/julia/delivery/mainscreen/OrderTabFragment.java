@@ -61,6 +61,8 @@ public class OrderTabFragment extends Fragment {
                         if (response.isSuccessful()) {
                             final List<OrderPreview> orders = response.body();
 
+                            mainActivity.SetupAddresses(orders);
+
                             adapter = new OrderAdapter(orders, new OnCustomClickListener() {
                                 @Override
                                 public void onClick(int position) {
