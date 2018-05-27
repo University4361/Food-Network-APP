@@ -5,7 +5,7 @@ package com.example.julia.delivery.objects;
  */
 
 public enum OrderStatus {
-    New (0), InProcess(1), Completed(2), Canceled(3);
+    None (-1), New (0), InProcess(1), Completed(2), Canceled(3);
     private int mValue;
     OrderStatus(int value) { this.mValue = value;} // Constructor
     public int id(){return mValue;}                  // Return enum index

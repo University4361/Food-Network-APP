@@ -211,20 +211,20 @@ public class OrderFragment extends Fragment {
     void orderButtonClick() {
         final OrderStatus newStatus = OrderStatus.fromId(order.getOrderStatus().id() + 1);
 
-        if (newStatus.id() == 3)
-            return;
-
         String title;
         String message;
         String buttonYes = getResources().getString(R.string.yes);
         String buttonNo = getResources().getString(R.string.no);
-
-        title = getResources().getString(newStatus == OrderStatus.InProcess ? R.string.start : R.string.finish);
-        message = getResources().getString(newStatus == OrderStatus.InProcess ? R.string.start_message : R.string.finish_message);
-
         AlertDialog.Builder ad = new AlertDialog.Builder(getContext());
+
+        title = getResources().getString(newStatus == OrderStatus.InProcess ? R.string.start : newStatus != OrderStatus.Canceled ? R.string.finish : R.string.canceled);
         ad.setTitle(title);
-        ad.setMessage(message);
+
+        if (newStatus != OrderStatus.Canceled){
+            message = getResources().getString(newStatus == OrderStatus.InProcess ? R.string.start_message : R.string.finish_message);
+            ad.setMessage(message);
+        }
+
         ad.setPositiveButton(buttonYes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
 
@@ -274,13 +274,17 @@ public class OrderFragment extends Fragment {
         {
             case Completed:
                 mOrderButton.setText(R.string.done);
-
                 mOrderButton.setBackgroundColor(getResources().getColor(R.color.colorSecondaryText));
-                mOrderButton.setClickable(false);
                 mChangeImage.setClickable(false);
                 break;
             case InProcess:
                 mOrderButton.setText(getResources().getString(R.string.finish));
+                break;
+            case Canceled:
+                mOrderButton.setBackgroundColor(getResources().getColor(R.color.colorRed));
+                mOrderButton.setClickable(false);
+                mChangeImage.setClickable(false);
+                mOrderButton.setText(getResources().getString(R.string.canceled_status));
                 break;
         }
     }

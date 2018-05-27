@@ -59,8 +59,8 @@ public class HistoryFragment extends Fragment {
         GetOrdersHistoryRequest getOrdersHistoryRequest = new GetOrdersHistoryRequest();
 
         getOrdersHistoryRequest.setToken(token);
-        getOrdersHistoryRequest.setFromDate(new GregorianCalendar(2018, 4, 16).getTime());
-        getOrdersHistoryRequest.setToDate(new GregorianCalendar(2018, 4, 21).getTime());
+        getOrdersHistoryRequest.setFromDate(new GregorianCalendar(2018, 4, 19).getTime());
+        getOrdersHistoryRequest.setToDate(new GregorianCalendar(2018, 4, 25).getTime());
 
         App.getApi().getOrdersHistory(getOrdersHistoryRequest).enqueue(new Callback<List<OrderHistory>>() {
             @Override

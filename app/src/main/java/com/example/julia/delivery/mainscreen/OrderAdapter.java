@@ -55,7 +55,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
 
-    private void SortAndSetupItems(List<OrderPreview> orders)
+    public void SortAndSetupItems(List<OrderPreview> orders)
     {
         List<OrderPreview> result = new ArrayList<OrderPreview>();
 
@@ -111,11 +111,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 break;
             case Completed:
                 holder.orderLayout.setBackgroundResource(R.drawable.view_rectangle_primary_light);
+                holder.imageView.setImageResource(R.drawable.ic_check_circle_outline);
+                holder.imageView.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
                 break;
             case InProcess:
                 holder.orderLayout.setBackgroundResource(R.drawable.view_rectangle_green);
-                holder.imageView.setImageResource(R.drawable.ic_circle);
-                holder.imageView.setColorFilter(ContextCompat.getColor(context, R.color.colorGreen), PorterDuff.Mode.SRC_IN);
+                holder.imageView.setImageBitmap(null);
                 break;
             case Canceled:
                 holder.orderLayout.setBackgroundResource(R.drawable.view_rectangle_red);

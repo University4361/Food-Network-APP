@@ -19,9 +19,16 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="finish">Завершить</string>
+    <string name="canceled_status">Отменен</string>
+    <string name="canceled">Отменить</string>
     <string name="done">Выполнен</string>
     <string name="token">TOKEN</string>
     <string name="user">USER</string>
+    <string name="show_all">Show all</string>
+    <string name="show_new">Show new</string>
+    <string name="show_opened">Show opened</string>
+    <string name="show_closed">Show closed</string>
+    <string name="show_canceled">Show canceled</string>
     <string name="finish_message">Заказ доставлен и оплачен?</string>
     <string name="start_message">Вы готовы приступить к выполнению заказа?</string>
 

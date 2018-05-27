@@ -66,9 +66,11 @@ public class MainFragment extends Fragment {
 
     public void UpdatePreview(OrderPreview preview) {
         ((OrderTabFragment) adapter.instantiateItem(viewPager, 0)).UpdatePreview(preview);
+        ((MapTabFragment) adapter.instantiateItem(viewPager, 1)).UpdatePreview(preview);
     }
 
     public void SetupAddresses(List<OrderPreview> previews) {
+        ((OrderTabFragment) adapter.instantiateItem(viewPager, 0)).SetupAddresses(previews);
         ((MapTabFragment) adapter.instantiateItem(viewPager, 1)).SetupAddresses(previews);
     }
 }

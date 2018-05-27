@@ -13,14 +13,18 @@ import android.view.ViewGroup;
 
 import com.example.julia.delivery.MainActivity;
 import com.example.julia.delivery.objects.OrderPreview;
+import com.example.julia.delivery.objects.OrderStatus;
 import com.google.android.gms.maps.*;
 
 import com.example.julia.delivery.R;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,6 +32,7 @@ public class MapTabFragment extends Fragment implements OnMapReadyCallback {
 
     GoogleMap mMap;
     List<OrderPreview> previewList;
+    List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,13 +64,8 @@ public class MapTabFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
-        for (OrderPreview preview :
-                previewList) {
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(preview.getAddress().getLatitude(), preview.getAddress().getLongitude()))
-                    .title(preview.getAddress().getStreet())).setTag(preview.getId());
+        SetupMap();
 
-        }
         /*map.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Marker"));*/
@@ -109,16 +109,59 @@ public class MapTabFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void SetupAddresses(List<OrderPreview> previews) {
+        previewList = previews;
+
         if (mMap == null) {
-            previewList = previews;
             return;
         }
 
-        for (OrderPreview preview :
-                previews) {
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(preview.getAddress().getLatitude(), preview.getAddress().getLongitude()))
-                    .title(preview.getCustomer().getName() + "/n" + preview.getCustomer().getPhoneNumber()));
+        SetupMap();
+    }
+
+    public void UpdatePreview(OrderPreview preview)
+    {
+        List<OrderPreview> newList = new ArrayList<>();
+
+        for (OrderPreview orderPreview:
+             previewList) {
+            if (preview.getId() != orderPreview.getId()){
+                newList.add(orderPreview);
+            }
+            else {
+                newList.add(preview);
+            }
         }
+
+        SetupAddresses(newList);
+    }
+
+    private  void  SetupMap()
+    {
+        mMap.clear();
+
+        for (OrderPreview preview :
+                previewList) {
+            MarkerOptions marker = new MarkerOptions()
+                    .position(new LatLng(preview.getAddress().getLatitude(), preview.getAddress().getLongitude()))
+                    .title(preview.getAddress().getStreet())
+                    .icon(BitmapDescriptorFactory.defaultMarker(preview.getOrderStatus() == OrderStatus.Completed ?
+                            BitmapDescriptorFactory.HUE_MAGENTA : preview.getOrderStatus() == OrderStatus.InProcess ?
+                            BitmapDescriptorFactory.HUE_GREEN : preview.getOrderStatus() == OrderStatus.Canceled ?
+                            BitmapDescriptorFactory.HUE_RED : BitmapDescriptorFactory.HUE_AZURE ));
+
+            markers.add(marker);
+            mMap.addMarker(marker).setTag(preview.getId());
+        }
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (MarkerOptions marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+
+        int padding = 100; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+        mMap.animateCamera(cu);
     }
 }

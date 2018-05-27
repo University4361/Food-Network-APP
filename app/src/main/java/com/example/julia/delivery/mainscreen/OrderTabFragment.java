@@ -95,4 +95,11 @@ public class OrderTabFragment extends Fragment {
         adapter.UpdateAndSetupItems(preview);
         adapter.notifyDataSetChanged();
     }
+
+    public void SetupAddresses(List<OrderPreview> previews) {
+        if (adapter != null) {
+            adapter.SortAndSetupItems(previews);
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

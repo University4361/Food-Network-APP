@@ -12,5 +12,12 @@
             android:title="История" />
     </group>
 
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/log_out"
+            android:icon="@drawable/ic_close"
+            android:title="Выход" />
+    </group>
+
 
 </menu>

@@ -1,5 +1,6 @@
 package com.example.julia.delivery;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,12 +31,14 @@ import com.example.julia.delivery.mainscreen.MainFragment;
 import com.example.julia.delivery.mainscreen.MapTabFragment;
 import com.example.julia.delivery.objects.Courier;
 import com.example.julia.delivery.objects.OrderPreview;
+import com.example.julia.delivery.objects.OrderStatus;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,6 +50,8 @@ public class MainActivity extends AppCompatActivity
     public HistoryFragment historyFragment;
     View headerView;
     NavigationView navigationView;
+    List<OrderPreview> allPreviews;
+    OrderStatus currentFilterStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +154,19 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        if (id == R.id.log_out) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(getString(R.string.token), null);
+            editor.putString(getString(R.string.user), null);
+            editor.apply();
+
+            Intent intent = new Intent(this, RegistrationActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -163,13 +183,72 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().add(R.id.container, fragment).addToBackStack(null).commit();
     }
 
-    public void  updateStatusPreview(OrderPreview preview)
-    {
-        mainFragment.UpdatePreview(preview);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.show_open:
+                currentFilterStatus = OrderStatus.InProcess;
+                SetupAddresses(allPreviews, OrderStatus.InProcess);
+                return true;
+            case R.id.show_new:
+                currentFilterStatus = OrderStatus.New;
+                SetupAddresses(allPreviews, OrderStatus.New);
+                return true;
+            case R.id.show_all:
+                SetupAddresses(allPreviews);
+                return true;
+            case R.id.show_closed:
+                currentFilterStatus = OrderStatus.Completed;
+                SetupAddresses(allPreviews, OrderStatus.Completed);
+                return true;
+            case R.id.show_canceled:
+                currentFilterStatus = OrderStatus.Canceled;
+                SetupAddresses(allPreviews, OrderStatus.Canceled);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void  updateStatusPreview(OrderPreview preview) {
+        for (OrderPreview orderPreview :
+                allPreviews) {
+            if (orderPreview.getId() == preview.getId()) {
+                orderPreview.setOrderStatus(preview.getOrderStatus());
+            }
+        }
+
+        if (currentFilterStatus == OrderStatus.None)
+            SetupAddresses(allPreviews);
+        else
+            SetupAddresses(allPreviews, currentFilterStatus);
     }
 
     public void SetupAddresses(List<OrderPreview> previews) {
+        currentFilterStatus = OrderStatus.None;
+        allPreviews = previews;
         mainFragment.SetupAddresses(previews);
+    }
+
+    public void SetupAddresses(List<OrderPreview> previews, OrderStatus status) {
+        List<OrderPreview> newPreviews = new ArrayList<>();
+
+        for (OrderPreview preview :
+                previews) {
+            if (preview.getOrderStatus() == status) {
+                newPreviews.add(preview);
+            }
+        }
+
+        mainFragment.SetupAddresses(newPreviews);
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
